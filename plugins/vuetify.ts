@@ -13,6 +13,7 @@ export default defineNuxtPlugin(nuxtApp => {
           secondary: '#FF951D',
           accent: "#FBE5ED",
           error: '#b71c1c',
+      
 
         }}
       },

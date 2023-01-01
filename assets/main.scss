@@ -1,13 +1,30 @@
 :root{
     --primary-color:#D20653;
-    
+    --background-color:#f5f5f5;
+    --accent: #fbe5ed;
+
 }
 
 
+body{
+    background-color: var(--background-color);
+    direction: rtl;
+}
+
+
+.grey{
+    color:grey;
+}
 .layout {
     max-width: 90%;
     margin: auto;
+
   }
   .layout-padding {
     padding: 0 5em;
+  }
+
+
+  hr{
+    margin:2em 0;
   }

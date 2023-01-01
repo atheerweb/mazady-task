@@ -8,55 +8,53 @@ const selectedLanguage = languages[0];
 selected.value = items[0];
 </script>
 <template>
-  <v-app>
-    <nav class="navigation">
-      <div class="logo-search-bar layout-padding">
-        <img class="logo-img" src="~/assets/images/logo.png" alt="logo" />
+  <nav class="navigation">
+    <div class="logo-search-bar layout-padding">
+      <img class="logo-img" src="~/assets/images/logo.png" alt="logo" />
 
-        <div class="search-bar">
-          <v-btn class="navigation__button white bg-primary rounded">
-            <v-icon x-large> mdi-magnify </v-icon>
-          </v-btn>
+      <div class="search-bar">
+        <v-btn class="navigation__button white bg-primary rounded">
+          <v-icon x-large> mdi-magnify </v-icon>
+        </v-btn>
 
-          <v-text-field
-            v-model="searchText"
-            bg-color="accent"
-            color="accent"
-            class="text-direction text-input"
-            placeholder="إبحث هنا"
-          ></v-text-field>
+        <v-text-field
+          v-model="searchText"
+          bg-color="accent"
+          color="accent"
+          class="text-direction text-input"
+          placeholder="إبحث هنا"
+        ></v-text-field>
 
-          <v-select
-            v-model="selected"
-            :items="items"
-            bg-color="accent"
-            color="accent"
-            class="select-input"
-          ></v-select>
-        </div>
+        <v-select
+          v-model="selected"
+          :items="items"
+          bg-color="accent"
+          color="accent"
+          class="select-input"
+        ></v-select>
       </div>
-      <div class="routes-icons layout-padding">
-        <ul class="routes">
-          <li v-for="(route, index) in routes" :key="index">{{ route }}</li>
-        </ul>
-        <div class="options">
-          <v-icon x-large color="white"> mdi-gift </v-icon>
-          <v-icon x-large color="white"> mdi-bell </v-icon>
-          <v-icon x-large color="white"> mdi-heart </v-icon>
-          <v-select
-            class="language-input"
-            v-model="selectedLanguage"
-            :items="languages"
-            bg-color="secondary"
-            color="secondary"
-            item-color="primary"
-          ></v-select>
-        </div>
+    </div>
+    <div class="routes-icons layout-padding">
+      <ul class="routes">
+        <li v-for="(route, index) in routes" :key="index">{{ route }}</li>
+      </ul>
+      <div class="options">
+        <v-icon x-large color="white"> mdi-gift </v-icon>
+        <v-icon x-large color="white"> mdi-bell </v-icon>
+        <v-icon x-large color="white"> mdi-heart </v-icon>
+        <v-select
+          class="language-input"
+          v-model="selectedLanguage"
+          :items="languages"
+          bg-color="secondary"
+          color="secondary"
+          item-color="primary"
+        ></v-select>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <slot />
-  </v-app>
+  <slot />
 </template>
 <style lang="scss" scoped>
 * {
@@ -108,6 +106,7 @@ selected.value = items[0];
       color: #fff;
       font-size: 1rem;
       font-weight: 600;
+      list-style: none;
     }
     .options {
       display: flex;
