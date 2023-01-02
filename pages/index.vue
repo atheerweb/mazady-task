@@ -40,9 +40,9 @@
 							</p>
 						</div>
 						<div class="write-offer">
-							<v-text-field placeholder="اكتب المبلغ"></v-text-field>
+							<input placeholder="اكتب المبلغ" />
 
-							<button class="submit">تأكيد</button>
+							<button class="submit offer-button">تأكيد</button>
 						</div>
 					</div>
 				</div>
@@ -52,21 +52,21 @@
 				<div class="some-data">
 					<div class="data">
 						<div class="location">
-							<v-icon>mdi-map-marker</v-icon>
+							<img src="~/assets/images/marker.svg" alt="" />
 							<b>Egypt,Mansoura</b>
 						</div>
 						<div class="currency">
-							<v-icon>mdi-currency-usd</v-icon>
+							<img src="~/assets/images/paid.svg" alt="" />
 							<p>البيع لأعلي سعر</p>
 						</div>
 						<div class="categories">
-							<v-icon>mdi-grid-large</v-icon>
+							<img src="~/assets/images/categories.svg" alt="" />
 							<p>منتجات متعددة</p>
 						</div>
 					</div>
 					<div class="data">
 						<div class="count">200 قطعه</div>
-						<div class="record"><v-icon>mdi-microphone</v-icon>صوت</div>
+						<div class="record"> <img src="~/assets/images/mic.svg" alt="" /> صوت</div>
 					</div>
 				</div>
 				<hr />
@@ -202,6 +202,12 @@
 				align-items: flex-start;
 				gap: 1em;
 				width: 20em;
+				input {
+					border: solid 1px rgba(0, 0, 0, 0.25);
+					padding: 1em;
+					border-radius: 0.3em;
+					height: 4em;
+				}
 			}
 		}
 	}
@@ -217,7 +223,7 @@
 				gap: 0.5em;
 				div {
 					display: flex;
-					gap: 1em;
+					gap: 0.3em;
 				}
 				.record {
 					color: orange;
@@ -240,6 +246,7 @@
 		align-items: center;
 		gap: 1em;
 		.current-auction-value {
+			border-radius: 0.25em;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
@@ -264,9 +271,8 @@
 	.submit {
 		background: linear-gradient(90deg, #d20653 6.17%, #9b0257 97.51%);
 		padding: 0.5em 1em;
-		width: 6em;
 		color: #fff;
-		border-radius: 0.3em;
+		border-radius: 0.3rem;
 	}
 
 	.competitors {
@@ -315,5 +321,12 @@
 			padding: 1em;
 			border-radius: 0.3em;
 		}
+	}
+
+	.offer-button {
+		width: 6em;
+		color: #fff;
+		border-radius: 0.3em;
+		height: 3.4em;
 	}
 </style>
