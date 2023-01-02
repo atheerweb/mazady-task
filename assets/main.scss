@@ -5,6 +5,10 @@
 	font-family: "Tajawal", sans-serif;
 }
 
+body{
+	overflow-x: hidden;
+}
+
 button {
 	border: none;
 	font-size: 1rem;
@@ -89,3 +93,23 @@ hr {
 .thirdly {
 	color: var(--thirdly);
 }
+
+
+label {
+	display: block;
+  }
+
+
+  fieldset{
+	padding:1em;
+  }
+
+
+  .submit {
+	background: linear-gradient(90deg, #d20653 6.17%, #9b0257 97.51%);
+	padding: 0.5em 1em;
+	color: #fff;
+	border-radius: 0.3rem;
+	border: none !important;
+	display: block;
+  }
