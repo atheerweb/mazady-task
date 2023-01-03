@@ -1,16 +1,26 @@
 <script setup lang="ts">
 import StarIcon from "~/assets/images/star.svg?component";
+import MarkerIcon from "~/assets/images/marker.svg?component";
+import PaidIcon from "~/assets/images/paid.svg?component";
+import CategoriesIcon from "~/assets/images/categories.svg?component";
+import MicIcon from "~/assets/images/mic.svg?component";
+import chevronDown from "~/assets/images/chevronDown.svg?component";
+import chevronUp from "~/assets/images/chevron-up.svg?component";
+import SendIcon from "~/assets/images/send.svg?component";
 const recommendations = ["100000", "100010", "100020"];
 </script>
 
 <template>
   <div class="layout">
+    <chevronUp />
     <div class="slider-imgs">
+      <chevronUp class="icon" />
       <img
         v-for="index in 4"
         :key="index"
         src="~/assets/images/70782355_964775460532132_2751270695932526592_n.png"
       />
+      <chevronDown class="icon" />
     </div>
     <main class="auction">
       <section class="header">
@@ -55,27 +65,36 @@ const recommendations = ["100000", "100010", "100020"];
         </div>
       </section>
       <section class="auction__details section">
+        <h2 class="sub-title">ارسل رسالة الي البائع</h2>
+        <p class="send-message-text">
+          يمكنك في وقت البث المباشر إرسال رسالة للبائع
+        </p>
+        <div class="send-message">
+          <input class="send-message-input" placeholder="اكتب المبلغ" />
+
+          <button class="submit send-message-button"><SendIcon /></button>
+        </div>
+      </section>
+      <section class="auction__details section">
         <h4 class="sub-title">تفاصيل المزاد</h4>
         <div class="some-data">
           <div class="data">
             <div class="location">
-              <img src="~/assets/images/marker.svg" alt="" />
+              <MarkerIcon />
               <b>Egypt,Mansoura</b>
             </div>
             <div class="currency">
-              <img src="~/assets/images/paid.svg" alt="" />
+              <PaidIcon />
               <p>البيع لأعلي سعر</p>
             </div>
             <div class="categories">
-              <img src="~/assets/images/categories.svg" alt="" />
+              <CategoriesIcon />
               <p>منتجات متعددة</p>
             </div>
           </div>
           <div class="data">
             <div class="count">200 قطعه</div>
-            <div class="record">
-              <img src="~/assets/images/mic.svg" alt="" /> صوت
-            </div>
+            <div class="record"><MicIcon /> صوت</div>
           </div>
         </div>
         <hr />
@@ -146,6 +165,32 @@ const recommendations = ["100000", "100010", "100020"];
           <h2>5000</h2>
         </div>
       </section>
+      <section class="favourite-auctions section">
+        <div
+          v-for="index in 4"
+          :key="index"
+          class="favourite-auctions__details"
+        >
+          <div class="img-state">
+            <img src="~/assets/images/public.png" class="public-img" />
+            <div>
+              <img src="~/assets/images/favourites.png" />
+              <img src="~/assets/images/live.png" />
+            </div>
+          </div>
+          <div class="text">
+            سيارة سريعة بى ام دابليو تصنيع 2021 حالته جديدة سيارة سريعة بى ام
+            دابليو تصنيع 2021 حالته جديدة
+            <div class="price">
+              <p class="currency">
+                <PaidIcon />
+                اعلى سعر
+              </p>
+              <b class="primary">$500</b>
+            </div>
+          </div>
+        </div>
+      </section>
     </aside>
   </div>
 </template>
@@ -162,8 +207,10 @@ const recommendations = ["100000", "100010", "100020"];
 }
 .layout {
   display: grid;
-  grid-template-columns: 4em 55em calc(100% - 60em);
+  grid-template-columns: 4em 55em 27em;
   gap: 1.5em;
+  max-width: 90em;
+  margin: auto;
   margin-top: 3.5em;
 }
 .auction {
@@ -184,7 +231,7 @@ const recommendations = ["100000", "100010", "100020"];
   }
   .auction-slider {
     width: 100%;
-    object-fit: scale-down;
+    object-fit: contain;
   }
 
   .code {
@@ -344,14 +391,97 @@ const recommendations = ["100000", "100010", "100020"];
 }
 
 .fill-orange {
-  
-    fill: orange;
-  
+  fill: orange;
 }
 
 .fill-gray {
-  
-    fill: #707070;
+  fill: #707070;
+}
 
+.icon {
+  margin: 0.5em;
+}
+
+.send-message-text {
+  font-size: 1rem;
+  opacity: 0.6;
+  margin-bottom: 0.5em;
+}
+.send-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .send-message-input {
+    width: 100%;
+    padding: 1em;
+    border-radius: 10em;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .send-message-button {
+    border-radius: 10em;
+    width: 3em;
+    height: 3em;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.favourite-auctions {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  align-items: center;
+  justify-content: center;
+  .favourite-auctions__details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    .price {
+      display: flex;
+      justify-content: space-between;
+      margin: 1em 0;
+    }
+
+    .img-state {
+      background-image: url(/_nuxt/assets/images/fav.png);
+      width: 14.7em;
+      height: 5em;
+      background-size: contain;
+      display: flex;
+      flex-direction: column-reverse;
+
+      justify-content: space-between;
+      align-items: flex-start;
+      div {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .public-img {
+    
+        margin-right: -0.5em;
+      }
+    }
+  }
+}
+
+.primary {
+  color: var(--primary-color);
+  font-size: 1.3rem;
+}
+
+.currency {
+  opacity: 0.6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
 }
 </style>
