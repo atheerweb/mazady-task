@@ -60,19 +60,20 @@ async function getCategoryProps(
   }
   return null;
 }
-function pushIntoCategoryProperties(
-  data: CategoryProperties[],
-  propId: number
-) {
+function pushIntoCategoryProperties(data: CategoryProperties, propId: number) {
   categoryProperties.value?.forEach((prop) => {
     if (prop.id === propId) {
-      prop.optionsChildren = data;
+      if (!prop.optionsChildren) {
+        prop.optionsChildren = [];
+      }
+      prop.optionsChildren?.push(...data);
     }
   });
 }
 
 async function fetchOptions(propId: number, selectedOption: string) {
-  const res = await useGetRequest(`get-options-child/${selectedOption}`);
+  const parsedObject = JSON.parse(selectedOption);
+  const res = await useGetRequest(`get-options-child/${parsedObject.id}`);
   if (res.code == 200) {
     pushIntoCategoryProperties(res.data, propId);
   }
@@ -109,6 +110,7 @@ function submit() {
   <div class="form-wrapper">
     <form @submit.prevent="submit">
       <BaseSelect
+        :searchable="true"
         v-if="mainCategories"
         v-model="data.selected_main_category"
         label="Select Main Category"
@@ -117,6 +119,7 @@ function submit() {
         object-value="id"
       />
       <BaseSelect
+        :searchable="true"
         v-if="subCategories"
         v-model="data.selected_sub_category"
         label="Select sub Category"
@@ -136,23 +139,24 @@ function submit() {
           :label="prop.name"
           :options="prop.options"
           object-name="name"
-          object-value="id"
           @update:model-value="fetchOptions(prop.id, prop.value)"
           :key="propKey"
         />
+
         <BaseInput
-          v-if="prop.value === 'other'"
+          v-if="prop.value.includes('other')"
           v-model="prop.other"
           placeholder="from user"
         />
 
         <div v-for="option in prop.optionsChildren" :key="option.id">
           <BaseSelect
+            :searchable="true"
             v-model="option.value"
             :label="option.name"
             :options="option.options"
             object-name="name"
-            object-value="id"
+            @update:model-value="fetchOptions(prop.id, option.value)"
           />
         </div>
       </fieldset>

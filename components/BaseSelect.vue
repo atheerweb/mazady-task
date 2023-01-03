@@ -1,34 +1,6 @@
-<template>
-  <div class="select-wrapper">
-    <label :for="label">{{ label }}</label>
-    <div @click="toggleOptions" class="select" :name="label" :id="label">
-      {{ chosenIndex !== nullx ? options[chosenIndex]?.name : "" }}
-    </div>
-    <div class="options" v-if="showOptions">
-      <input
-        v-if="searchable"
-        @input="search($event.target?.value)"
-        type="text"
-        :placeholder="`search for ${label}`"
-      />
-      <p
-        class="option"
-        v-for="(option, index) in optionsArray"
-        :key="index"
-        :id="objectValue ? option[objectValue] : option"
-        @click="
-          $emit('update:modelValue', $event.target?.id);
-          setChosen(index);
-        "
-      >
-        {{ objectName ? option[objectName] : option }}
-      </p>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { P } from "vitest/dist/types-bae746aa";
+import { stringify } from "querystring";
+import chevronDown from "~/assets/images/chevronDown.svg?component";
 
 defineEmits(["update:modelValue"]);
 interface props {
@@ -69,6 +41,42 @@ function search(text: string) {
 }
 </script>
 
+<template>
+  <div class="select-wrapper">
+    <label :for="label">{{ label }}</label>
+    <div @click="toggleOptions" class="select" :name="label" :id="label">
+      <chevronDown />
+      {{ chosenIndex !== null ? options[chosenIndex]?.name : "" }}
+    </div>
+    <div class="options" v-if="showOptions">
+      <input
+        v-if="searchable"
+        @input="search($event.target?.value)"
+        type="text"
+        :placeholder="`search for ${label}`"
+      />
+      <p
+        class="option"
+        v-for="(option, index) in optionsArray"
+        :key="index"
+        :id="
+          objectValue
+            ? option[objectValue]
+            : typeof option === 'object'
+            ? JSON.stringify({ id: option.id, name: option.name })
+            : option
+        "
+        @click="
+          $emit('update:modelValue', $event.target?.id);
+          setChosen(index);
+        "
+      >
+        {{ objectName ? option[objectName] : option }}
+      </p>
+    </div>
+  </div>
+</template>
+
 <style lang="scss" scoped>
 .select {
   cursor: pointer;
@@ -78,8 +86,9 @@ function search(text: string) {
   border: 1px solid black;
   display: flex;
   padding: 0 0.5em;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
+  flex-direction: row-reverse;
 }
 
 .options {
@@ -91,6 +100,11 @@ function search(text: string) {
 }
 .option {
   cursor: pointer;
+}
+
+.option:hover {
+  background-color: var(--primary-color);
+  color: #fff;
 }
 
 input {
