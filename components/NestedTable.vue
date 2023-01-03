@@ -19,7 +19,7 @@ defineProps<{
             <NestedTable :data="option" /> 
           </div>   
             </th>
-            <th v-else>{{ value }}</th>
+            <th v-else>{{ value ? value : 'null' }}</th>
           </div>
       </tr>
     </tbody>
