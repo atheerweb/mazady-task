@@ -22,4 +22,11 @@ withDefaults(defineProps<inputProps>(), {
   />
 </template>
 
-<style></style>
+<style>
+input {
+  width: 100%;
+  padding: 1em;
+  border-radius: 0.5em;
+  border: 1px solid rgba(0 0 0 / 0.1);
+}
+</style>

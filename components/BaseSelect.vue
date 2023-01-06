@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<props>(), {
   searchable: false,
 });
 
-const chosenIndex = ref<null | number>(null);
+const searchValue = ref("");
 
 const showOptions = ref(false);
 
@@ -23,11 +23,6 @@ const optionsArray = ref(props.options);
 
 function toggleOptions() {
   showOptions.value = !showOptions.value;
-}
-function setChosen(optionIndex: number) {
-  chosenIndex.value = optionIndex;
-
-  toggleOptions();
 }
 
 function search(text: string) {
@@ -39,6 +34,23 @@ function search(text: string) {
     optionsArray.value = props.options;
   }
 }
+
+const chosenValue = computed(() => {
+  let parsed = "";
+  let chosen = "";
+  if (props.modelValue) {
+    parsed = JSON.parse(props.modelValue);
+  }
+  props.options.forEach((option) => {
+    if (
+      (typeof parsed === "number" && option.id === parsed) ||
+      (typeof parsed === "object" && option.id === parsed.id)
+    ) {
+      chosen = option.name;
+    }
+  });
+  return chosen;
+});
 </script>
 
 <template>
@@ -46,10 +58,11 @@ function search(text: string) {
     <label :for="label">{{ label }}</label>
     <div @click="toggleOptions" class="select" :name="label" :id="label">
       <chevronDown />
-      {{ chosenIndex !== null ? options[chosenIndex]?.name : "" }}
+      {{ chosenValue }}
     </div>
     <div class="options" v-if="showOptions">
       <input
+        v-model="searchValue"
         v-if="searchable"
         @input="search($event.target?.value)"
         type="text"
@@ -68,7 +81,7 @@ function search(text: string) {
         "
         @click="
           $emit('update:modelValue', $event.target?.id);
-          setChosen(index);
+          toggleOptions();
         "
       >
         {{ objectName ? option[objectName] : option }}
@@ -83,12 +96,13 @@ function search(text: string) {
   min-width: 5em;
   min-height: 2em;
   background-color: white;
-  border: 1px solid black;
+  border: 1px solid rgba(0 0 0 / 0.1);
   display: flex;
-  padding: 0 0.5em;
+  padding: 0.6em;
   justify-content: space-between;
   align-items: center;
   flex-direction: row-reverse;
+  border-radius: 0.5em;
 }
 
 .options {
@@ -109,6 +123,13 @@ function search(text: string) {
 
 input {
   width: 100%;
-  padding: 0.5em;
+  padding: 0.7em;
+  margin: 0.5em 0;
+  border: solid 1px rgba(0 0 0 / 0.1);
+  border-radius: 0.5em;
+}
+
+label {
+  margin: 0.3em 0;
 }
 </style>

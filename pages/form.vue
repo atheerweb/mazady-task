@@ -5,6 +5,7 @@ import { SubCategory } from "~/types/SubCategory";
 import { CategoryProperties } from "~/types/CategoryProperties";
 import { Data, PropsValues } from "~/types/Data";
 import { isArray } from "@vue/shared";
+import { Console } from "console";
 
 const data = ref<Data>({
   selected_main_category: "",
@@ -13,6 +14,7 @@ const data = ref<Data>({
 });
 const subKey = ref(0);
 const propKey = ref(0);
+const propCKey = ref(0);
 const submitted = ref(false);
 const subCategories = ref<SubCategory[] | null>(null);
 const mainCategories = ref<MainCategory[] | null>(null);
@@ -35,14 +37,25 @@ watch(
   async (newV) => {
     let res = await getCategoryProps(newV);
     if (res) {
-      res.forEach((prop) => {
-        prop.options.push({ id: "other", name: "other" });
-      });
+      res = pushOtherIntoNestedArray(res, "options");
     }
     categoryProperties.value = res;
     propKey.value++;
   }
 );
+
+function pushOtherIntoNestedArray(array: any[], key: string) {
+  const modifiedArray = array;
+  modifiedArray.forEach((arry) => {
+    arry[key] = pushOtherIntoArray(arry[key]);
+  });
+  return modifiedArray;
+}
+function pushOtherIntoArray(array: option[]) {
+  let modifiedArray: option[] = array;
+  modifiedArray.push({ id: "other", name: "other" });
+  return modifiedArray;
+}
 
 async function getMainCategories() {
   const res = await useGetRequest("get_all_cats");
@@ -60,29 +73,54 @@ async function getCategoryProps(
   }
   return null;
 }
-function pushIntoCategoryProperties(data: CategoryProperties, propId: number) {
+function pushIntoCategoryProperties(
+  data: CategoryProperties[],
+  propId: number,
+  clear?: boolean
+) {
   categoryProperties.value?.forEach((prop) => {
     if (prop.id === propId) {
-      if (!prop.optionsChildren) {
+      if (!prop.optionsChildren || clear) {
         prop.optionsChildren = [];
       }
-      prop.optionsChildren?.push(...data);
+      let exists = false;
+      prop.optionsChildren.forEach((child) => {
+        data.forEach((nChild) => {
+          if (child.name === nChild.name) {
+            child.options = nChild.options;
+            exists = true;
+            propCKey.value++;
+          }
+        });
+      });
+      if (!exists) {
+        prop.optionsChildren.push(...data);
+      }
     }
   });
 }
 
-async function fetchOptions(propId: number, selectedOption: string) {
+async function fetchOptions(
+  propId: number,
+  selectedOption: string,
+  clear?: boolean
+) {
   const parsedObject = JSON.parse(selectedOption);
   const res = await useGetRequest(`get-options-child/${parsedObject.id}`);
   if (res.code == 200) {
-    pushIntoCategoryProperties(res.data, propId);
+    res.data = pushOtherIntoNestedArray(res.data, "options");
+    res.data = pushIntoCategoryProperties(res.data, propId, clear);
   }
 }
 function setOptionsChildren(prop: CategoryProperties) {
   let options: PropsValues[] = [];
   if (prop.optionsChildren?.length && Array.isArray(prop.optionsChildren)) {
     options = prop.optionsChildren.map((option) => {
-      return { [`${option.name}`]: option.value };
+      return {
+        [`${option.name}`]: option.other_value
+          ? { id: option.name, value: option.other_value }
+          : option.value,
+      };
     });
   }
   return options;
@@ -91,7 +129,9 @@ function setOptionsChildren(prop: CategoryProperties) {
 function mapPropsValues() {
   const array = categoryProperties.value?.map((prop) => {
     return {
-      [`${prop.name}`]: prop.value === "other" ? prop.other : prop.value,
+      [`${prop.name}`]: prop.other_value
+        ? { id: prop.name, value: prop.other_value }
+        : prop.value,
       optionsChildren: setOptionsChildren(prop),
     };
   });
@@ -139,13 +179,13 @@ function submit() {
           :label="prop.name"
           :options="prop.options"
           object-name="name"
-          @update:model-value="fetchOptions(prop.id, prop.value)"
+          @update:model-value="fetchOptions(prop.id, prop.value, true)"
           :key="propKey"
         />
 
         <BaseInput
           v-if="prop.value.includes('other')"
-          v-model="prop.other"
+          v-model="prop.other_value"
           placeholder="from user"
         />
 
@@ -157,6 +197,12 @@ function submit() {
             :options="option.options"
             object-name="name"
             @update:model-value="fetchOptions(prop.id, option.value)"
+            :key="propCKey"
+          />
+          <BaseInput
+            v-if="option.value.includes('other')"
+            v-model="option.other_value"
+            placeholder="from user"
           />
         </div>
       </fieldset>

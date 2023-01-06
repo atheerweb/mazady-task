@@ -1,4 +1,4 @@
-interface option {
+export interface option {
     id: number | string,
     name: string,
     slug?: string,
@@ -15,7 +15,7 @@ export interface CategoryProperties {
     list: boolean;
     type: null,
     value: string;
-    other_value: null,
+    other_value:string,
     options:option[]
     optionsChildren?:CategoryProperties[];
     other:string;
