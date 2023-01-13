@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { stringify } from "querystring";
 import chevronDown from "~/assets/images/chevronDown.svg?component";
+import searchFilter from "~/logic/searchFilter";
+import checkObjectName from "~/logic/checkObjectName";
+import checkObjectValue from "~/logic/checkObjectValue";
 
-defineEmits(["update:modelValue"]);
+const emit = defineEmits({
+  updateValue(value) {
+    return typeof value === "number" || "string";
+  },
+});
 interface props {
   label: string;
   options: any[];
@@ -25,11 +32,11 @@ function toggleOptions() {
   showOptions.value = !showOptions.value;
 }
 
-function search(text: string) {
-  if (text) {
-    optionsArray.value = props.options.filter((option) => {
-      return option.name.toLowerCase().startsWith(text);
-    });
+function search(event: Event) {
+  const input = event.target as HTMLInputElement;
+
+  if (input.value) {
+    optionsArray.value = searchFilter(input.value, optionsArray.value);
   } else {
     optionsArray.value = props.options;
   }
@@ -51,6 +58,10 @@ const chosenValue = computed(() => {
   });
   return chosen;
 });
+
+function updateModelValue(event: MouseEvent) {
+  emit("updateValue", event);
+}
 </script>
 
 <template>
@@ -64,7 +75,7 @@ const chosenValue = computed(() => {
       <input
         v-model="searchValue"
         v-if="searchable"
-        @input="search($event.target?.value)"
+        @input="search($event)"
         type="text"
         :placeholder="`search for ${label}`"
       />
@@ -72,19 +83,12 @@ const chosenValue = computed(() => {
         class="option"
         v-for="(option, index) in optionsArray"
         :key="index"
-        :id="
-          objectValue
-            ? option[objectValue]
-            : typeof option === 'object'
-            ? JSON.stringify({ id: option.id, name: option.name })
-            : option
-        "
         @click="
-          $emit('update:modelValue', $event.target?.id);
+          updateModelValue(checkObjectValue(objectValue, option));
           toggleOptions();
         "
       >
-        {{ objectName ? option[objectName] : option }}
+        {{ checkObjectName(objectName, option) }}
       </p>
     </div>
   </div>
